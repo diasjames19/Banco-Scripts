@@ -1,0 +1,84 @@
+CREATE TABLE categorias(
+       categoria_id INTEGER PRIMARY kEY AUTOINCREMENT,
+       categoria_nome VARCHAR (20) NOT NULL,
+       categoria_url_imagem VARCHAR (250) NOT NULL);
+
+
+INSERT INTO categorias(categoria_nome,categoria_url_imagem)
+VALUES('Pratos','https://static.baratocoletivo.com.br/_cps//2017/0724/cp/oferta_15009282517041_Ofertas.jpg'),('Lanches','https://diaonline.ig.com.br/wp-content/uploads/2020/07/pit-dog-jatai_1capa-1024x686.jpg'),('Sobremesas','https://segredosdacomida.com.br/wp-content/uploads/2021/12/sobremesas-de-ano-novo.png'),('Bebidas','https://kfcbrasil.com.br/wp-content/uploads/2020/08/BANNERS_SITE_BEBIDAS.png');
+
+SELECT*FROm categorias;
+
+       
+CREATE TABLE produtos(
+       produto_id INTEGER PRIMARY KEY autoincrement,
+       categoria_id INT (11) NOT NULL
+       REFERENCES categorias (categoria_id)
+       ON DELETE CASCADE
+       ON UPDATE CASCADE,
+       produto_nome VARCHAR (100) NOT NULL,
+       produto_descricao VARCHAR (300) NOT NULL,
+       produto_imagem VARCHAR (250) NOT NULL,
+       produto_valor DECIMAL (5,2) NOT NULL);
+       
+INSERT INTO produtos(categoria_id,produto_nome,produto_descricao,produto_imagem,produto_valor)
+VALUES(1,'Filé de Frango','Filé de Frango, Arroz, Salada Crua - Prato Individual','https://riomarkennedyonline.com.br/riomarkennedyonline/2020/09/file_de_frango_companhia_do_churrasco_riomar_kennedy-1-1.jpg','22.50'),(1,'Feijoada','Feijoada,Arroz,Salada,Farofa e laranja cortada - Prato Individual','https://www.dicasdemulher.com.br/wp-content/uploads/2017/08/receitas-de-feijoada.jpg','18.00'),(1,'Moqueca Camarão','Camarão, Arroz, Pirão e Farofa','https://i0.wp.com/receitasdatv.com/wp-content/uploads/2010/04/moqueca-baiana.jpg?fit=608%2C389&ssl=1','110.00');
+
+SELECT*FROM produtos;
+
+
+CREATE TABLE clientes(
+        cliente_id INTEGER PRIMARY KEY autoincrement,
+        cliente_nome VARCHAR (50) NOT NULL,
+        cliente_sobrenome VARCHAR (100) NOT NULL,
+        cliente_cpf CHAR(11) NOT NULL,
+        cliente_nrCeleular CHAR(15) NOT NULL,
+        cliente_email VARCHAR (150) NOT NULL);
+        
+INSERT INTO clientes(cliente_nome,cliente_sobrenome,cliente_cpf,cliente_nrCeleular,cliente_email)
+VALUES('James','Alves','12345678901','71987601050','diasjames@hotmail.com'),('Danusa','Muniz','32165498710','7132306440','meucliente@meupedido.com'),('Elaine','Silva','98765432100','7133711515','meupedido@meucliente.com');
+        
+
+SELECT*FROM clientes;
+
+CREATE TABLE pedidos(
+        pedido_id INTEGER PRIMARY KEY autoincrement,
+        produto_id iINT (11) NOT NULL
+        REFERENCES produtos (produto_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+        cliente_id INT (11) NOT NULL
+        REFERENCES clientes (cliente_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+        pedido_qtd INT (11)NOT NULL,
+        pedido_precoTotal DECIMAL (7,2) NOT NULL);
+        
+
+
+INSERT INTO pedidos(produto_id,cliente_id,pedido_qtd,pedido_precoTotal)
+VALUES(3,3,2,'7,00'),(9,3,2,'9,00');
+
+SELECT*FROM pedidos;
+
+SELECT clientes.cliente_nome, produtos.produto_nome
+FROM produtos,clientes
+INNER JOIN pedidos
+where pedidos.pedido_id = 1;
+
+
+        
+CREATE TABLE vendas(
+        venda_id INTEGER PRIMARY KEY autoincrement,
+        pedido_id INT (11) NOT NULL
+        REFERENCES pedidos (pedido_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+        venda_data_atual DATE NOT NULL,
+        venda_hora_atual TIME NOT NULL,
+        venda_total DECIMAL (7,2)NOT NULL);
+        
+INSERT INTO vendas(pedido_id,venda_data_atual,venda_hora_atual,venda_total)
+VALUES(1,'19-10-2021','12:10:59','110,00'),(2,'21-03-2022','10:00:00','7,00'),(3,'22-03-2022','11:20:00','9,00');
+
+SELECT*FROM vendas;
